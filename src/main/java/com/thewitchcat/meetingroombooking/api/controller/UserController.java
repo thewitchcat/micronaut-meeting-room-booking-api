@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.thewitchcat.meetingroombooking.api.domain.User;
 import com.thewitchcat.meetingroombooking.api.dto.ErrorResponseDto;
+import com.thewitchcat.meetingroombooking.api.dto.PagedResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.user.UserRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.user.UserResponseDto;
 import com.thewitchcat.meetingroombooking.api.service.UserService;
 
+import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -37,19 +39,22 @@ public class UserController {
   @Get
   @ApiResponse(responseCode = "200", description = "List of Users")
   @Operation(summary = "List Users", description = "List registered Users on the system")
-  public HttpResponse<List<UserResponseDto>> getAllUsers() {
-    
-    List<User> listOfUsers = service.getAllUsers();
+  public PagedResponseDto<UserResponseDto> getAllUsers(int page, int size) {
+    Page<User> users = service.getAllUsers(page, size);
 
-    List<UserResponseDto> res = listOfUsers.stream().map(
-      user -> new UserResponseDto(
+    List<UserResponseDto> res = users.getContent().stream()
+      .map(user -> new UserResponseDto(
         user.getId(),
         user.getName(),
         user.getEmail()
-      )
-    ).toList();
+      )).toList();
 
-    return HttpResponse.ok(res);
+    return new PagedResponseDto<>(
+      res,
+      page,
+      size,
+      users.getTotalSize()
+    );
   }
 
   @Post

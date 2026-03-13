@@ -1,6 +1,5 @@
 package com.thewitchcat.meetingroombooking.api.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.thewitchcat.meetingroombooking.api.domain.User;
@@ -8,6 +7,8 @@ import com.thewitchcat.meetingroombooking.api.dto.user.UserRequestDto;
 import com.thewitchcat.meetingroombooking.api.exception.user.EmailAlreadyExistsException;
 import com.thewitchcat.meetingroombooking.api.repository.UserRepository;
 
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
@@ -40,7 +41,8 @@ public class UserService {
     return user;
   }
 
-  public List<User> getAllUsers() {
-    return repository.findAll();
+  public Page<User> getAllUsers(int page, int size) {
+    Pageable users = Pageable.from(page, size);
+    return repository.findAll(users);
   }
 }
