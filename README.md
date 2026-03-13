@@ -180,9 +180,17 @@ Start the database and run the application:
 
 The application runs on port 3000 (default is 8080 in Micronaut).
 
-If you want to reset the database schema, uncomment `clean-schema: true` in `application.yaml` before starting the application.  
+> _If you want to reset the database schema, uncomment `clean-schema: true` in `application.yaml` before starting the application._
+>
+> _This is **optional** — integration and unit tests already manage the database state with `@BeforeEach` and `@AfterEach`. You only need this if you want to start with a clean database while running the application against PostgreSQL._
 
-This is **optional** — integration and unit tests already manage the database state with `@BeforeEach` and `@AfterEach`. You only need this if you want to start with a clean database while running the application against PostgreSQL.
+> ⚠️ **Note**:
+>
+> _The database specified in `application.yaml` must exist before running the application.  
+> Please create the database manually using the name defined in `application.yaml`._
+>
+> _Alternatively, you may use a different database name, but make sure to update the
+> configuration in `application.yaml` accordingly so it matches your local setup._
 
 ---
 
