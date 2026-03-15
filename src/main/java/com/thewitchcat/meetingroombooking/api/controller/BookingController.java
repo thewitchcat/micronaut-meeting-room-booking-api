@@ -5,11 +5,13 @@ import java.util.UUID;
 
 import com.thewitchcat.meetingroombooking.api.domain.Booking;
 import com.thewitchcat.meetingroombooking.api.dto.ErrorResponseDto;
+import com.thewitchcat.meetingroombooking.api.dto.PagedResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.booking.BookingCancelResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.booking.BookingRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.booking.BookingResponseDto;
 import com.thewitchcat.meetingroombooking.api.service.BookingService;
 
+import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -40,12 +42,11 @@ public class BookingController {
   @Get
   @ApiResponse(responseCode = "200", description = "List of Bookings")
   @Operation(summary = "List Bookings", description = "List registered Bookings on the system")
-  public HttpResponse<List<BookingResponseDto>> getAllBookings() {
-    
-    List<Booking> listOfBookings = service.getAllBookings();
+  public PagedResponseDto<BookingResponseDto> getAllBookings(int page, int size) {
+    Page<Booking> bookings = service.getAllBookings(page, size);
 
-    List<BookingResponseDto> res = listOfBookings.stream().map(
-      booking -> new BookingResponseDto(
+    List<BookingResponseDto> res = bookings.getContent().stream()
+      .map(booking -> new BookingResponseDto(
         booking.getId(),
         booking.getStartTime(),
         booking.getEndTime(),
@@ -53,11 +54,16 @@ public class BookingController {
         booking.getCreatedAt(),
         booking.getUser(),
         booking.getRoom()
-      )
-    ).toList();
+      )).toList();
 
-    return HttpResponse.ok(res);
+    return new PagedResponseDto<>(
+      res,
+      page,
+      size,
+      bookings.getTotalSize()
+    );
   }
+  
 
   @Post
   // @ApiResponse(responseCode = "404", description = "User not found")

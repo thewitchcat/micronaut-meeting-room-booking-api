@@ -1,7 +1,6 @@
 package com.thewitchcat.meetingroombooking.api.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import com.thewitchcat.meetingroombooking.api.domain.Booking;
@@ -18,6 +17,8 @@ import com.thewitchcat.meetingroombooking.api.repository.BookingRepository;
 import com.thewitchcat.meetingroombooking.api.repository.RoomRepository;
 import com.thewitchcat.meetingroombooking.api.repository.UserRepository;
 
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
@@ -104,7 +105,8 @@ public class BookingService {
     return booking;
   }
 
-  public List<Booking> getAllBookings() {
-    return bookingRepository.findAll();
+  public Page<Booking> getAllBookings(int page, int size) {
+    Pageable bookings = Pageable.from(page, size);
+    return bookingRepository.findAll(bookings);
   }
 }
