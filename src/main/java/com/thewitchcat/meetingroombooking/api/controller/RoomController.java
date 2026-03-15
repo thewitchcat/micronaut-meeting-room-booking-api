@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.thewitchcat.meetingroombooking.api.domain.Room;
 import com.thewitchcat.meetingroombooking.api.dto.ErrorResponseDto;
+import com.thewitchcat.meetingroombooking.api.dto.PagedResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.room.RoomRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.room.RoomResponseDto;
 import com.thewitchcat.meetingroombooking.api.service.RoomService;
 
+import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
@@ -37,21 +39,24 @@ public class RoomController {
   @Get
   @ApiResponse(responseCode = "200", description = "List of Rooms")
   @Operation(summary = "List Rooms", description = "List registered Rooms on the system")
-  public HttpResponse<List<RoomResponseDto>> getAllRooms() {
-    
-    List<Room> listOfRooms = service.getAllRooms();
+  public PagedResponseDto<RoomResponseDto> getAllRooms(int page, int size) {
+    Page<Room> rooms = service.getAllRooms(page, size);
 
-    List<RoomResponseDto> res = listOfRooms.stream().map(
-      room -> new RoomResponseDto(
+    List<RoomResponseDto> res = rooms.getContent().stream()
+      .map(room -> new RoomResponseDto(
         room.getId(),
         room.getName(),
         room.getCapacity(),
         room.isActive(),
         room.getCreatedAt()
-      )
-    ).toList();
+      )).toList();
 
-    return HttpResponse.ok(res);
+    return new PagedResponseDto<>(
+      res,
+      page,
+      size,
+      rooms.getTotalSize()
+    );
   }
   
   @Post

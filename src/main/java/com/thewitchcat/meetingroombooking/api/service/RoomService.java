@@ -9,6 +9,8 @@ import com.thewitchcat.meetingroombooking.api.dto.room.RoomRequestDto;
 import com.thewitchcat.meetingroombooking.api.exception.room.RoomAlreadyExistsException;
 import com.thewitchcat.meetingroombooking.api.repository.RoomRepository;
 
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
@@ -43,7 +45,8 @@ public class RoomService {
     return room;
   }
 
-  public List<Room> getAllRooms() {
-    return repository.findAll();
+  public Page<Room> getAllRooms(int page, int size) {
+    Pageable rooms = Pageable.from(page, size);
+    return repository.findAll(rooms);
   }
 }
