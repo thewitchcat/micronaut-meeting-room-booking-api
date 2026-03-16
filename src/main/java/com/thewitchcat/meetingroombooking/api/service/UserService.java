@@ -3,6 +3,7 @@ package com.thewitchcat.meetingroombooking.api.service;
 import java.util.UUID;
 
 import com.thewitchcat.meetingroombooking.api.domain.User;
+import com.thewitchcat.meetingroombooking.api.dto.user.UserFilterRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.user.UserRequestDto;
 import com.thewitchcat.meetingroombooking.api.exception.user.EmailAlreadyExistsException;
 import com.thewitchcat.meetingroombooking.api.repository.UserRepository;
@@ -41,8 +42,8 @@ public class UserService {
     return user;
   }
 
-  public Page<User> getAllUsers(int page, int size) {
+  public Page<User> getAllUsers(UserFilterRequestDto filter, int page, int size) {
     Pageable users = Pageable.from(page, size);
-    return repository.findAll(users);
+    return repository.findFiltered(filter.name(), filter.email(), users);
   }
 }

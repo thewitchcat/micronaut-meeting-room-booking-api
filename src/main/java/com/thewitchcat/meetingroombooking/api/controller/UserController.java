@@ -5,6 +5,7 @@ import java.util.List;
 import com.thewitchcat.meetingroombooking.api.domain.User;
 import com.thewitchcat.meetingroombooking.api.dto.ErrorResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.PagedResponseDto;
+import com.thewitchcat.meetingroombooking.api.dto.user.UserFilterRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.user.UserRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.user.UserResponseDto;
 import com.thewitchcat.meetingroombooking.api.service.UserService;
@@ -15,6 +16,8 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.RequestBean;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,8 +42,12 @@ public class UserController {
   @Get
   @ApiResponse(responseCode = "200", description = "List of Users")
   @Operation(summary = "List Users", description = "List registered Users on the system")
-  public PagedResponseDto<UserResponseDto> getAllUsers(int page, int size) {
-    Page<User> users = service.getAllUsers(page, size);
+  public PagedResponseDto<UserResponseDto> getAllUsers(
+    @RequestBean UserFilterRequestDto filter,
+    @QueryValue(defaultValue = "0") int page,
+    @QueryValue(defaultValue = "5") int size
+  ) {
+    Page<User> users = service.getAllUsers(filter, page, size);
 
     List<UserResponseDto> res = users.getContent().stream()
       .map(user -> new UserResponseDto(
