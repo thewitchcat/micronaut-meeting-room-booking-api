@@ -5,6 +5,7 @@ import java.util.List;
 import com.thewitchcat.meetingroombooking.api.domain.Room;
 import com.thewitchcat.meetingroombooking.api.dto.ErrorResponseDto;
 import com.thewitchcat.meetingroombooking.api.dto.PagedResponseDto;
+import com.thewitchcat.meetingroombooking.api.dto.room.RoomFilterRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.room.RoomRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.room.RoomResponseDto;
 import com.thewitchcat.meetingroombooking.api.service.RoomService;
@@ -15,6 +16,8 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.RequestBean;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,8 +42,12 @@ public class RoomController {
   @Get
   @ApiResponse(responseCode = "200", description = "List of Rooms")
   @Operation(summary = "List Rooms", description = "List registered Rooms on the system")
-  public PagedResponseDto<RoomResponseDto> getAllRooms(int page, int size) {
-    Page<Room> rooms = service.getAllRooms(page, size);
+  public PagedResponseDto<RoomResponseDto> getAllRooms(
+    @RequestBean RoomFilterRequestDto filter,
+    @QueryValue(defaultValue = "0") int page,
+    @QueryValue(defaultValue = "5") int size
+  ) {
+    Page<Room> rooms = service.getAllRooms(filter, page, size);
 
     List<RoomResponseDto> res = rooms.getContent().stream()
       .map(room -> new RoomResponseDto(

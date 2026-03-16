@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.thewitchcat.meetingroombooking.api.domain.Room;
+import com.thewitchcat.meetingroombooking.api.dto.room.RoomFilterRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.room.RoomRequestDto;
 import com.thewitchcat.meetingroombooking.api.exception.room.RoomAlreadyExistsException;
 import com.thewitchcat.meetingroombooking.api.repository.RoomRepository;
@@ -44,8 +45,8 @@ public class RoomService {
     return room;
   }
 
-  public Page<Room> getAllRooms(int page, int size) {
+  public Page<Room> getAllRooms(RoomFilterRequestDto filter, int page, int size) {
     Pageable rooms = Pageable.from(page, size);
-    return repository.findAll(rooms);
+    return repository.findFiltered(filter.name(), filter.capacity(), filter.active(), rooms);
   }
 }
