@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.thewitchcat.meetingroombooking.api.domain.Booking;
 import com.thewitchcat.meetingroombooking.api.domain.Room;
 import com.thewitchcat.meetingroombooking.api.domain.User;
+import com.thewitchcat.meetingroombooking.api.dto.booking.BookingFilterRequestDto;
 import com.thewitchcat.meetingroombooking.api.dto.booking.BookingRequestDto;
 import com.thewitchcat.meetingroombooking.api.enums.BookingStatus;
 import com.thewitchcat.meetingroombooking.api.exception.booking.BookingConflictException;
@@ -105,8 +106,13 @@ public class BookingService {
     return booking;
   }
 
-  public Page<Booking> getAllBookings(int page, int size) {
+  public Page<Booking> getAllBookings(BookingFilterRequestDto filter, int page, int size) {
     Pageable bookings = Pageable.from(page, size);
-    return bookingRepository.findAll(bookings);
+    return bookingRepository.findFiltered(
+      filter.startTime(),
+      filter.endTime(),
+      filter.status(),
+      bookings
+    );
   }
 }
