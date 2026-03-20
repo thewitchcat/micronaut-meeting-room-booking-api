@@ -64,8 +64,8 @@ public class UserControllerTest {
       .then()
         .statusCode(200)
         .contentType("application/json")
-        .body("size()", equalTo(1))
-        .body("name[0]", equalTo("Mike"))
-        .body("email[0]", equalTo("mike@example.com"));
+        .body("content.size()", equalTo(1))
+        .body("content[0].name", equalTo("Mike"))
+        .body("content[0].email", equalTo("mike@example.com"));
   }
 }

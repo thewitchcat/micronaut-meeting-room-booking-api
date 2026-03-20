@@ -47,8 +47,8 @@ public class BookingControllerTest {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(4);
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0);
+    LocalDateTime endTime = startTime.plusHours(4).withMinute(0).withSecond(0).withNano(0);
 
     UserRequestDto user = new UserRequestDto("Mike", "mike@example.com");
     RoomRequestDto room = new RoomRequestDto("Room #1", 40, true);
@@ -71,7 +71,7 @@ public class BookingControllerTest {
       .then()
         .extract()
         .jsonPath()
-        .getUUID("[0].id");
+        .getUUID("content[0].id");
 
     UUID roomId = spec
       .when()
@@ -79,7 +79,7 @@ public class BookingControllerTest {
       .then()
         .extract()
         .jsonPath()
-        .getUUID("[0].id");
+        .getUUID("content[0].id");
     
     Map<String, Object> booking = Map.of(
       "startTime", startTime.format(formatter),
@@ -106,8 +106,8 @@ public class BookingControllerTest {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(4);
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0);
+    LocalDateTime endTime = startTime.plusHours(4).withMinute(0).withSecond(0).withNano(0);
 
     UserRequestDto user = new UserRequestDto("Mike", "mike@example.com");
     RoomRequestDto room = new RoomRequestDto("Room #1", 40, true);
@@ -130,7 +130,7 @@ public class BookingControllerTest {
       .then()
         .extract()
         .jsonPath()
-        .getUUID("[0].id");
+        .getUUID("content[0].id");
 
     UUID roomId = spec
       .when()
@@ -138,7 +138,7 @@ public class BookingControllerTest {
       .then()
         .extract()
         .jsonPath()
-        .getUUID("[0].id");
+        .getUUID("content[0].id");
     
     Map<String, Object> booking = Map.of(
       "startTime", startTime.format(formatter),
@@ -159,9 +159,9 @@ public class BookingControllerTest {
       .then()
         .statusCode(200)
         .contentType("application/json")
-        .body("size()", equalTo(1))
-        .body("startTime[0]", equalTo(startTime.format(formatter)))
-        .body("endTime[0]", equalTo(endTime.format(formatter)))
-        .body("status[0]", equalTo("CONFIRMED"));
+        .body("content.size()", equalTo(1))
+        .body("content[0].startTime", equalTo(startTime.format(formatter)))
+        .body("content[0].endTime", equalTo(endTime.format(formatter)))
+        .body("content[0].status", equalTo("CONFIRMED"));
   }
 }

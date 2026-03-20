@@ -67,9 +67,9 @@ public class RoomControllerTest {
       .then()
         .statusCode(200)
         .contentType("application/json")
-        .body("size()", equalTo(1))
-        .body("name[0]", equalTo("Room #1"))
-        .body("capacity[0]", equalTo(30))
-        .body("active[0]", equalTo(false));
+        .body("content.size()", equalTo(1))
+        .body("content[0].name", equalTo("Room #1"))
+        .body("content[0].capacity", equalTo(30))
+        .body("content[0].active", equalTo(false));
   }
 }
