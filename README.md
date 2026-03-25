@@ -246,4 +246,3 @@ Some implementation choices were made intentionally to emphasize clean backend a
 * Role-based authorization (Admin/User)
 * Advanced booking status lifecycle
 * Time zone support
-* Pagination and filtering endpoints
